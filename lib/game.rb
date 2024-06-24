@@ -6,4 +6,8 @@ class Game
   def initialize(players = [])
     @players = players
   end
+
+  def add_player(player)
+    players << player
+  end
 end

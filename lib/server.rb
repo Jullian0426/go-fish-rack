@@ -8,6 +8,10 @@ require_relative 'game'
 require_relative 'player'
 
 class Server < Sinatra::Base
+  enable :sessions
+  register Sinatra::RespondWith
+  use Rack::JSONBodyParser
+
   def game
     @@game ||= Game.new
   end
@@ -17,13 +21,21 @@ class Server < Sinatra::Base
   end
 
   post '/join' do
-    player = Player.new(params['name'])
-    game.players << player
-    redirect '/game'
+    api_key = SecureRandom.hex(10)
+    player = Player.new(params['name'], api_key)
+    session[:current_player] = player
+    game.add_player(player)
+    respond_to do |f|
+      f.html { redirect '/game' }
+      f.json { json api_key: api_key }
+    end
   end
 
   get '/game' do
     redirect '/' if game.players.empty?
-    slim :game, locals: { players: game.players }
+    respond_to do |f|
+      f.html { slim :game, locals: { game: game, current_player: session[:current_player] } }
+      f.json { json players: game.players }
+    end
   end
 end
