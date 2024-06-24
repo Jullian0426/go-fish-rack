@@ -4,3 +4,12 @@ html lang="en"
     meta name="viewport" content="width=device-width, initial-scale=1.0"/
     title Go Fish
   body 
+    h1 Join Game
+    form action="/join" method="post" 
+      label for="name" Name: 
+      input#name type="text" name="name"
+      button Join
+    | Players
+    ul
+      - @players.each do |player|
+        li = player
