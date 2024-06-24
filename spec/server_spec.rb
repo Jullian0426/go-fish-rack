@@ -15,7 +15,6 @@ RSpec.describe Server do
 
   it 'is possible to join a game' do
     visit '/'
-    expect(page).to have_content('Players')
     expect(page).not_to have_content('John')
     fill_in :name, with: 'John'
     click_on 'Join'

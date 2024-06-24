@@ -5,6 +5,7 @@ require 'sinatra/json'
 require 'sinatra/respond_with'
 require 'rack/contrib'
 require_relative 'game'
+require_relative 'player'
 
 class Server < Sinatra::Base
   def game
@@ -12,18 +13,17 @@ class Server < Sinatra::Base
   end
 
   get '/' do
-    @players = game.players
-    slim :index, locals: { game: game }
+    slim :index
   end
 
   post '/join' do
-    player = params['name']
+    player = Player.new(params['name'])
     game.players << player
-    redirect '/'
+    redirect '/game'
   end
 
-  # get '/game' do
-  #   redirect '/' if self.class.game.empty?
-  #   slim :game, locals: { game: self.class.game, current_player: session[:current_player] }
-  # end
+  get '/game' do
+    redirect '/' if game.players.empty?
+    slim :game, locals: { players: game.players }
+  end
 end
