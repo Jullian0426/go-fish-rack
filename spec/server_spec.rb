@@ -56,9 +56,9 @@ RSpec.describe Server do
   end
 
   # TODO: Display session player hand/books and opponent books
-  it 'should display hand only for session player' do
+  # it 'should display hand only for session player' do
     
-  end
+  # end
 
   def submit_player(name)
     visit '/'
@@ -82,7 +82,8 @@ RSpec.describe Server do
     api_key = JSON.parse(last_response.body)['api_key']
     expect(api_key).not_to be_nil
     api_get(api_key)
-    expect(JSON.parse(last_response.body).keys).to include 'players'
+    expect(last_response.status).to eq 200
+    expect(last_response).to match_json_schema('game')
   end
 
   it 'returns 401 error if api_key is not authorized' do

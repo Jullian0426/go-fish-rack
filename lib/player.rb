@@ -10,4 +10,13 @@ class Player
     @hand = []
     @books = []
   end
+
+  def serialize
+    {
+      name: name,
+      api_key: api_key,
+      hand: hand.map(&:serialize),
+      books: books.map(&:serialize)
+    }
+  end
 end
