@@ -55,4 +55,17 @@ RSpec.describe Server do
     }
     expect(JSON.parse(last_response.body).keys).to include 'players'
   end
+
+  it 'returns 401 error if api_key is not authorized' do
+    api_key = SecureRandom.hex(10)
+    get '/game', nil, {
+      'HTTP_AUTHORIZATION' => "Basic #{Base64.encode64("#{api_key}:X")}",
+      'HTTP_ACCEPT' => 'application/json'
+    }
+    expect(last_response.status).to eq(401)
+  end
+
+  # TODO: api_get and api_post helper methods
+  # TODO: validate player name
+  # TODO: take a turn
 end
