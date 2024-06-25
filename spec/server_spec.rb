@@ -12,6 +12,10 @@ RSpec.describe Server do
     Capybara.app = Server.new
   end
 
+  after do
+    Server.reset!
+  end
+
   it 'is possible to join a game' do
     visit '/'
     expect(page).not_to have_content('John')
@@ -67,6 +71,10 @@ RSpec.describe Server do
   include Rack::Test::Methods
   def app
     Server.new
+  end
+
+  after do
+    Server.reset!
   end
 
   it 'returns game status via API' do
