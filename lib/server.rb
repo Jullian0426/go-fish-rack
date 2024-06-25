@@ -11,9 +11,8 @@ class Server < Sinatra::Base
   enable :sessions
   register Sinatra::RespondWith
   use Rack::JSONBodyParser
-  # TODO: store valid api keys as instance variable
   def api_keys
-    @api_keys ||= []
+    @@api_keys ||= []
   end
 
   def game
@@ -22,24 +21,29 @@ class Server < Sinatra::Base
 
   def validate_api_key
     @auth ||= Rack::Auth::Basic::Request.new(request.env)
-    api_key = @auth.credentials.first
-    game.players.each do |player|
-      return player if player.api_key == api_key
-    end
-    nil
+    api_key = @auth.username
+    game.players.find { |player| player.api_key == api_key }
   end
 
-  # TODO: reset! method
+  def valid_name?
+    params['name'] && params['name'].length >= 3
+  end
+
+  def self.reset!
+    self.class.api_keys = nil
+    self.class.game = nil
+  end
 
   get '/' do
     slim :index
   end
 
   post '/join' do
+    redirect '/' unless valid_name?
     api_key = SecureRandom.hex(10)
     api_keys << api_key
     player = Player.new(params['name'], api_key)
-    session[:current_player] = player
+    session[:session_player] = player
     game.add_player(player)
     respond_to do |f|
       f.html { redirect '/game' }
@@ -50,8 +54,8 @@ class Server < Sinatra::Base
   get '/game' do
     respond_to do |f|
       f.html do
-        redirect '/' if game.players.empty?
-        slim :game, locals: { game: game, current_player: session[:current_player] }
+        redirect '/' if game.players.empty? || session[:session_player].nil?
+        slim :game, locals: { game: game, session_player: session[:session_player] }
       end
       f.json do
         halt 401, 'Unauthorized' unless validate_api_key

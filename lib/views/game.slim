@@ -5,14 +5,31 @@ html lang="en"
     link href="css/style.css" rel='stylesheet' type='text/css'
     title Document
   body 
+    | Your api key: 
+    = session_player.api_key
     h1 Players
     ul
       - game.players.each do |player|
-        li.player-list__player
-          - if player.api_key == current_player.api_key
+        li
+          - if player.api_key == session_player.api_key
             b = player.name
-            br
-            | api key is:
-            = player.api_key
+            ul
+              -player.hand.each do |card|
+                li
+                  = card.rank 
+                  | of 
+                  = card.suit
+            ul
+              -player.books.each do |card|
+                li.card
+                  = card.rank 
+                  |, 
+                  = card.suit
           - else
-            = player.name
+              = player.name
+              ul
+                -player.books.each do |card|
+                  li.card
+                    = card.rank 
+                    |, 
+                    = card.suit
