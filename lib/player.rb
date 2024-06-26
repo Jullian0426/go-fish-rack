@@ -11,6 +11,14 @@ class Player
     @books = []
   end
 
+  def add_to_hand(card)
+    hand << card
+  end
+
+  def hand_has_rank?(rank)
+    hand.any? { |card| card.rank == rank }
+  end
+
   def as_json
     {
       name: name,

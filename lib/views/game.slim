@@ -14,12 +14,14 @@ html lang="en"
           - if player.api_key == session_player.api_key
             b = player.name
             ul
+              | Hand:
               -player.hand.each do |card|
                 li
                   = card.rank 
                   |, 
                   = card.suit
             ul
+              | Books:
               -player.books.each do |book|
                 -book.cards.each do |card|
                   li
@@ -29,6 +31,7 @@ html lang="en"
           - else
               = player.name
               ul
+                | Books:
                 -player.books.each do |book|
                   -book.cards.each do |card|
                     li

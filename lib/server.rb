@@ -34,6 +34,12 @@ class Server < Sinatra::Base
     @@game = nil
   end
 
+  def start_game_if_possible
+    return if self.class.game.started
+
+    self.class.game.start if self.class.game.players.count >= Game::MIN_PLAYERS
+  end
+
   get '/' do
     slim :index
   end
@@ -55,6 +61,7 @@ class Server < Sinatra::Base
     respond_to do |f|
       f.html do
         redirect '/' if self.class.game.players.empty? || session[:session_player].nil?
+        start_game_if_possible
         slim :game, locals: { game: self.class.game, session_player: session[:session_player] }
       end
       f.json do
