@@ -36,13 +36,14 @@ html lang="en"
               span Books: None
 
     - if game.started && session_player.api_key == game.current_player.api_key
-      form action="/game" method="post"
+      form action="/game" method="patch"
         label for="player" Choose Opponent:
-        select#player
+        select#player name="opponent"
           - game.players.each do |player|
-            option value="#{player}" = player.name
+            - unless player.api_key == session_player.api_key
+              option value="#{player.api_key}" = player.name
         label for="rank" Choose Rank:
-        select#rank
-          - game.current_player.hand.each do |card|
+        select#rank name="rank"
+          - game.current_player.hand.uniq(&:rank).each do |card|
             option value="#{card.rank}" = card.rank
         button Take Turn

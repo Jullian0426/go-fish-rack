@@ -46,11 +46,13 @@ class Server < Sinatra::Base
 
   post '/join' do
     redirect '/' unless valid_name?
+    # TODO: move logic into models
     api_key = SecureRandom.hex(10)
     self.class.api_keys << api_key
     player = Player.new(params['name'], api_key)
     session[:session_player] = player
     self.class.game.add_player(player)
+    start_game_if_possible
     respond_to do |f|
       f.html { redirect '/game' }
       f.json { json api_key: api_key }
@@ -58,7 +60,6 @@ class Server < Sinatra::Base
   end
 
   get '/game' do
-    start_game_if_possible
     respond_to do |f|
       f.html do
         redirect '/' if self.class.game.players.empty? || session[:session_player].nil?
@@ -69,5 +70,12 @@ class Server < Sinatra::Base
         json self.class.game.as_json
       end
     end
+  end
+
+  patch '/game' do
+    opponent = params['opponent']
+    rank = params['rank']
+    self.class.game.play_round(opponent, rank)
+    redirect '/game'
   end
 end

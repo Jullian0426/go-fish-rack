@@ -26,6 +26,24 @@ class Game
     self.current_player = players.first
   end
 
+  def play_round(opponent, rank)
+    if opponent.hand_has_rank?(rank)
+      take_cards(rank, opponent)
+    else
+      go_fish(rank)
+    end
+    finalize_turn
+  end
+
+  def take_cards(opponent, rank)
+  end
+
+  def go_fish(rank)
+  end
+
+  def finalize_turn
+  end
+
   def next_player
     self.current_player = players[(players.index(current_player) + 1) % players.size]
   end

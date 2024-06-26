@@ -60,8 +60,8 @@ RSpec.describe Server do
 
   before do
     game = Server.game
-    game.players.first.hand = [Card.new('3', 'H')]
-    game.players.last.hand = [Card.new('6', 'C')]
+    game.players.first.hand = [Card.new('3', 'H'), Card.new('6', 'H')]
+    game.players.last.hand = [Card.new('6', 'C'), Card.new('10', 'C')]
     game.players.first.books = [Book.new([Card.new('7', 'D')])]
     game.players.last.books = [Book.new([Card.new('8', 'S')])]
 
@@ -69,10 +69,10 @@ RSpec.describe Server do
   end
 
   it 'should display session player hand and books' do
-    expect(@session1).to have_content('3, H')
+    expect(@session1).to have_content('3, H').and have_content('6, H')
     expect(@session1).not_to have_content('6, C')
     expect(@session1).to have_content('7, D').and have_content('8, S')
-    expect(@session2).to have_content('6, C')
+    expect(@session2).to have_content('6, C').and have_content('10, C')
     expect(@session2).not_to have_content('3, H')
     expect(@session2).to have_content('7, D').and have_content('8, S')
   end
@@ -84,6 +84,14 @@ RSpec.describe Server do
     refresh_sessions
     expect(@session1).not_to have_content('Take Turn')
     expect(@session2).to have_content('Take Turn')
+  end
+
+  describe 'Patch /game' do
+    xit 'should update player hands to reflect taking a card' do
+      @session1.click_on 'Take Turn'
+      expect(@session1).to have_content('6, C')
+      expect(@session2).not_to have_content('6, C')
+    end
   end
 
   def submit_player(name)
