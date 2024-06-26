@@ -11,12 +11,12 @@ class Player
     @books = []
   end
 
-  def serialize
+  def as_json
     {
       name: name,
       api_key: api_key,
-      hand: hand.map(&:serialize),
-      books: books.map(&:serialize)
+      hand: hand.map(&:as_json),
+      books: books.map(&:as_json)
     }
   end
 end

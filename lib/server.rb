@@ -59,7 +59,7 @@ class Server < Sinatra::Base
       end
       f.json do
         halt 401, 'Unauthorized' unless validate_api_key
-        self.class.game.serialize.to_json
+        json self.class.game.as_json
       end
     end
   end

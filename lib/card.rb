@@ -12,7 +12,7 @@ class Card
     @suit = suit
   end
 
-  def serialize
+  def as_json
     {
       rank: rank,
       suit: suit

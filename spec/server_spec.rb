@@ -57,7 +57,6 @@ RSpec.describe Server do
 
   # TODO: Display session player hand/books and opponent books
   # it 'should display hand only for session player' do
-    
   # end
 
   def submit_player(name)

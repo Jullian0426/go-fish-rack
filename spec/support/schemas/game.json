@@ -13,9 +13,9 @@
       }
     },
     "deck": {
-      "type": "array",
+      "type": "object",
       "items": {
-        "$ref": "file:/card.json#"
+        "$ref": "file:/deck.json#"
       }
     }
   }

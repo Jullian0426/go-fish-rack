@@ -12,9 +12,9 @@ class Book
     cards.first.rank
   end
 
-  def serialize
+  def as_json
     {
-      cards: cards.map(&:serialize)
+      cards: cards.map(&:as_json)
     }
   end
 end
