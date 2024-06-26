@@ -4,9 +4,9 @@ class Player
   attr_accessor :api_key, :hand, :books
   attr_reader :name
 
-  def initialize(name, api_key = '')
+  def initialize(name)
     @name = name
-    @api_key = api_key
+    @api_key = SecureRandom.hex(10)
     @hand = []
     @books = []
   end
