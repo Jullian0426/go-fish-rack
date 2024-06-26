@@ -6,6 +6,9 @@ require 'capybara'
 require 'capybara/dsl'
 ENV['RACK_ENV'] = 'test'
 require_relative '../lib/server'
+require_relative '../lib/card'
+require_relative '../lib/book'
+
 RSpec.describe Server do
   include Capybara::DSL
   before do
@@ -55,14 +58,34 @@ RSpec.describe Server do
     expect(@session1).to have_content('Player 2')
   end
 
-  # TODO: Display session player hand/books and opponent books
-  # it 'should display hand only for session player' do
-  # end
+  before do
+    game = Server.game
+    game.players.first.hand = [Card.new('3', 'H')]
+    game.players.last.hand = [Card.new('6', 'C')]
+    game.players.first.books = [Book.new([Card.new('7', 'D')])]
+    game.players.last.books = [Book.new([Card.new('8', 'S')])]
+
+    refresh_sessions
+  end
+
+  it 'should display session player hand and books' do
+    expect(@session1).to have_content('3, H')
+    expect(@session1).not_to have_content('6, C')
+    expect(@session1).to have_content('7, D').and have_content('8, S')
+    expect(@session2).to have_content('6, C')
+    expect(@session2).not_to have_content('3, H')
+    expect(@session2).to have_content('7, D').and have_content('8, S')
+  end
 
   def submit_player(name)
     visit '/'
     fill_in :name, with: name
     click_on 'Join'
+  end
+
+  def refresh_sessions
+    @session1.driver.refresh
+    @session2.driver.refresh
   end
 end
 

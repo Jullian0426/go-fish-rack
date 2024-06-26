@@ -14,6 +14,14 @@ class Game
     players << player
   end
 
+  def start
+    deck.shuffle
+
+    STARTING_HAND_SIZE.times do
+      players.each { |player| player.add_to_hand(deck.deal) }
+    end
+  end
+
   def as_json
     {
       players: players.map(&:as_json),

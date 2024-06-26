@@ -17,19 +17,21 @@ html lang="en"
               -player.hand.each do |card|
                 li
                   = card.rank 
-                  | of 
-                  = card.suit
-            ul
-              -player.books.each do |card|
-                li.card
-                  = card.rank 
                   |, 
                   = card.suit
-          - else
-              = player.name
-              ul
-                -player.books.each do |card|
-                  li.card
+            ul
+              -player.books.each do |book|
+                -book.cards.each do |card|
+                  li
                     = card.rank 
                     |, 
                     = card.suit
+          - else
+              = player.name
+              ul
+                -player.books.each do |book|
+                  -book.cards.each do |card|
+                    li
+                      = card.rank 
+                      |, 
+                      = card.suit
