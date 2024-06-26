@@ -34,6 +34,14 @@ class Server < Sinatra::Base
     @@game = nil
   end
 
+  def create_player
+    player = Player.new(params['name'])
+    self.class.api_keys << player.api_key
+    session[:session_player] = player
+    self.class.game.add_player(player)
+    player
+  end
+
   def start_game_if_possible
     return if self.class.game.started
 
@@ -46,12 +54,7 @@ class Server < Sinatra::Base
 
   post '/join' do
     redirect '/' unless valid_name?
-
-    player = Player.new(params['name'])
-    self.class.api_keys << player.api_key
-    session[:session_player] = player
-    self.class.game.add_player(player)
-
+    player = create_player
     start_game_if_possible
 
     respond_to do |f|
@@ -73,8 +76,9 @@ class Server < Sinatra::Base
     end
   end
 
-  patch '/game' do
-    opponent = params['opponent']
+  post '/game' do
+    opponent_key = params['opponent_key']
+    opponent = self.class.game.players.find { |player| player.api_key == opponent_key }
     rank = params['rank']
     self.class.game.play_round(opponent, rank)
     redirect '/game'

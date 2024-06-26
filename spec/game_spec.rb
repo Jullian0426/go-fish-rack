@@ -15,6 +15,7 @@ RSpec.describe Game do
     let(:card4) { Card.new('10', 'C') }
 
     before do
+      game.start
       player1.hand = [card1, card2]
       player2.hand = [card3, card4]
     end

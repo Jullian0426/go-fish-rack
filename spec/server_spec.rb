@@ -86,9 +86,12 @@ RSpec.describe Server do
     expect(@session2).to have_content('Take Turn')
   end
 
-  describe 'Patch /game' do
-    xit 'should update player hands to reflect taking a card' do
+  describe 'Post /game' do
+    it 'should update player hands to reflect taking a card' do
+      @session1.select 'Player 2', from: 'player'
+      @session1.select '6', from: 'rank'
       @session1.click_on 'Take Turn'
+      refresh_sessions
       expect(@session1).to have_content('6, C')
       expect(@session2).not_to have_content('6, C')
     end

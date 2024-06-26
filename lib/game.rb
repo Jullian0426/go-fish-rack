@@ -28,7 +28,7 @@ class Game
 
   def play_round(opponent, rank)
     if opponent.hand_has_rank?(rank)
-      take_cards(rank, opponent)
+      take_cards(opponent, rank)
     else
       go_fish(rank)
     end
@@ -36,6 +36,8 @@ class Game
   end
 
   def take_cards(opponent, rank)
+    cards_to_move = opponent.remove_by_rank(rank)
+    current_player.add_to_hand(cards_to_move)
   end
 
   def go_fish(rank)

@@ -36,9 +36,9 @@ html lang="en"
               span Books: None
 
     - if game.started && session_player.api_key == game.current_player.api_key
-      form action="/game" method="patch"
+      form action="/game" method="post"
         label for="player" Choose Opponent:
-        select#player name="opponent"
+        select#player name="opponent_key"
           - game.players.each do |player|
             - unless player.api_key == session_player.api_key
               option value="#{player.api_key}" = player.name
