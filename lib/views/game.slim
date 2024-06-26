@@ -6,18 +6,19 @@ html lang="en"
     title Document
   body
     p Your api key: #{session_player.api_key}
+
     h1 Players
     ul
       - game.players.each do |player|
-        - is_current_player = player.api_key == session_player.api_key
+        - is_session_player = player.api_key == session_player.api_key
         li
-          - if is_current_player
+          - if is_session_player
             strong = player.name
           - else
             = player.name
 
           - if game.started
-            - if is_current_player
+            - if is_session_player
               br
               span Your hand:
               ul
@@ -33,3 +34,15 @@ html lang="en"
             - else
               br
               span Books: None
+
+    - if game.started && session_player.api_key == game.current_player.api_key
+      form action="/game" method="post"
+        label for="player" Choose Opponent:
+        select#player
+          - game.players.each do |player|
+            option value="#{player}" = player.name
+        label for="rank" Choose Rank:
+        select#rank
+          - game.current_player.hand.each do |card|
+            option value="#{card.rank}" = card.rank
+        button Take Turn

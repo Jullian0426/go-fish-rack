@@ -17,6 +17,15 @@
       "items": {
         "$ref": "file:/deck.json#"
       }
+    },
+    "started": {
+      "type": "boolean"
+    },
+    "current_player": {
+      "type": "object",
+      "items": {
+        "$ref": "file:/player.json#"
+      }
     }
   }
 }

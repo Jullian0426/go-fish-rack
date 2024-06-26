@@ -77,6 +77,15 @@ RSpec.describe Server do
     expect(@session2).to have_content('7, D').and have_content('8, S')
   end
 
+  it "should display turn actions to game's current player" do
+    expect(@session1).to have_content('Take Turn')
+    expect(@session2).not_to have_content('Take Turn')
+    Server.game.next_player
+    refresh_sessions
+    expect(@session1).not_to have_content('Take Turn')
+    expect(@session2).to have_content('Take Turn')
+  end
+
   def submit_player(name)
     visit '/'
     fill_in :name, with: name
@@ -100,7 +109,7 @@ RSpec.describe Server do
   end
 
   it 'returns game status via API' do
-    api_post
+    2.times { api_post }
     api_key = JSON.parse(last_response.body)['api_key']
     expect(api_key).not_to be_nil
     api_get(api_key)
@@ -127,5 +136,4 @@ RSpec.describe Server do
       'CONTENT_TYPE' => 'application/json'
     }
   end
-  # TODO: take a turn
 end
