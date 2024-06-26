@@ -4,37 +4,32 @@ html lang="en"
     meta name="viewport" content="width=device-width, initial-scale=1.0"/
     link href="css/style.css" rel='stylesheet' type='text/css'
     title Document
-  body 
-    | Your api key: 
-    = session_player.api_key
+  body
+    p Your api key: #{session_player.api_key}
     h1 Players
     ul
       - game.players.each do |player|
+        - is_current_player = player.api_key == session_player.api_key
         li
-          - if player.api_key == session_player.api_key
-            b = player.name
-            ul
-              | Hand:
-              -player.hand.each do |card|
-                li
-                  = card.rank 
-                  |, 
-                  = card.suit
-            ul
-              | Books:
-              -player.books.each do |book|
-                -book.cards.each do |card|
-                  li
-                    = card.rank 
-                    |, 
-                    = card.suit
+          - if is_current_player
+            strong = player.name
           - else
-              = player.name
+            = player.name
+
+          - if game.started
+            - if is_current_player
+              br
+              span Your hand:
               ul
-                | Books:
+                - player.hand.each do |card|
+                  li #{card.rank}, #{card.suit}
+            - if player.books.any?
+              br
+              span Books:
+              ul
                 -player.books.each do |book|
-                  -book.cards.each do |card|
-                    li
-                      = card.rank 
-                      |, 
-                      = card.suit
+                  - book.cards.each do |card|
+                    li #{card.rank}, #{card.suit}
+            - else
+              br
+              span Books: None

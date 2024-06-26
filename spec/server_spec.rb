@@ -51,7 +51,7 @@ RSpec.describe Server do
     [@session1, @session2].each_with_index do |session, index|
       player_name = "Player #{index + 1}"
       expect(session).to have_content('Players')
-      expect(session).to have_css('b', text: player_name)
+      expect(session).to have_css('strong', text: player_name)
     end
     expect(@session2).to have_content('Player 1')
     @session1.driver.refresh
