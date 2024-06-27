@@ -59,11 +59,11 @@ RSpec.describe Server do
   end
 
   before do
-    game = Server.game
-    game.players.first.hand = [Card.new('3', 'H'), Card.new('6', 'H')]
-    game.players.last.hand = [Card.new('6', 'C'), Card.new('10', 'C')]
-    game.players.first.books = [Book.new([Card.new('7', 'D')])]
-    game.players.last.books = [Book.new([Card.new('8', 'S')])]
+    @game = Server.game
+    @game.players.first.hand = [Card.new('3', 'H'), Card.new('6', 'H')]
+    @game.players.last.hand = [Card.new('6', 'C'), Card.new('10', 'C')]
+    @game.players.first.books = [Book.new([Card.new('7', 'D')])]
+    @game.players.last.books = [Book.new([Card.new('8', 'S')])]
 
     refresh_sessions
   end

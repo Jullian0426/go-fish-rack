@@ -26,6 +26,19 @@
       "items": {
         "$ref": "file:/player.json#"
       }
+    },
+    "stay_turn": {
+      "type": "boolean"
+    },
+    "winner": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "file:/player.json#"
+        }
+      ]
     }
   }
 }
