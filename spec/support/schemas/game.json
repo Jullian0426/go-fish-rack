@@ -3,9 +3,9 @@
   "type": "object",
   "required": [
     "players",
+    "current_player",
     "deck",
     "started",
-    "current_player",
     "stay_turn",
     "winner"
   ],

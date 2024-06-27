@@ -19,9 +19,12 @@ class Server < Sinatra::Base
     @@game ||= Game.new
   end
 
-  def validate_api_key
+  def receive_api_key
     @auth ||= Rack::Auth::Basic::Request.new(request.env)
-    api_key = @auth.username
+    @auth.username
+  end
+
+  def validate_api_key(api_key)
     self.class.game.players.find { |player| player.api_key == api_key }
   end
 
@@ -70,14 +73,15 @@ class Server < Sinatra::Base
         slim :game, locals: { game: self.class.game, session_player: session[:session_player] }
       end
       f.json do
-        halt 401, 'Unauthorized' unless validate_api_key
-        # TODO: make json response user specific to not reveal opponent info
-        json self.class.game.as_json
+        api_key = receive_api_key
+        halt 401, 'Unauthorized' unless validate_api_key(api_key)
+        json self.class.game.as_json(api_key)
       end
     end
   end
 
   post '/game' do
+    # TODO: validate input
     opponent_index = params['opponent_index'].to_i
     opponent = self.class.game.players[opponent_index]
     rank = params['rank']

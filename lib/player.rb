@@ -25,12 +25,19 @@ class Player
     removed_cards
   end
 
-  def as_json
-    {
-      name: name,
-      api_key: api_key,
-      hand: hand.map(&:as_json),
-      books: books.map(&:as_json)
-    }
+  def as_json(session_player)
+    if session_player
+      {
+        name: name,
+        api_key: api_key,
+        hand: hand.map(&:as_json),
+        books: books.map(&:as_json)
+      }
+    else
+      {
+        name: name,
+        books: books.map(&:as_json)
+      }
+    end
   end
 end

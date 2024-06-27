@@ -76,12 +76,14 @@ class Game
     self.winner = players.max_by { |player| player.books.size }
   end
 
-  def as_json
+  def as_json(api_key)
     {
-      players: players.map(&:as_json),
+      players: players.map do |player|
+                 player.as_json(player.api_key == api_key)
+               end,
+      current_player: current_player.as_json(current_player.api_key == api_key),
       deck: deck.as_json,
       started: started,
-      current_player: current_player.as_json,
       stay_turn: stay_turn,
       winner: winner&.as_json
     }
