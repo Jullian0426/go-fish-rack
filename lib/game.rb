@@ -81,7 +81,7 @@ class Game
       players: players.map do |player|
                  player.as_json(player.api_key == api_key)
                end,
-      current_player: current_player.as_json(current_player.api_key == api_key),
+      current_player: current_player&.as_json(current_player.api_key == api_key),
       deck: deck.as_json,
       started: started,
       stay_turn: stay_turn,

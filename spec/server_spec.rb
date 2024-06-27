@@ -119,19 +119,37 @@ RSpec.describe Server do
     Server.reset!
   end
 
-  it 'returns game status via API' do
-    2.times { api_post_join }
-    api_key = JSON.parse(last_response.body)['api_key']
-    expect(api_key).not_to be_nil
-    api_get_game(api_key)
-    expect(last_response.status).to eq 200
-    expect(last_response).to match_json_schema('game')
-  end
-
   it 'returns 401 error if api_key is not authorized' do
     api_key = SecureRandom.hex(10)
     api_get_game(api_key)
     expect(last_response.status).to eq(401)
+  end
+
+  before do
+    join_and_get_game('Player 1')
+    join_and_get_game('Player 2')
+  end
+
+  it 'returns game status via API' do
+    expect(last_response.status).to eq 200
+    expect(last_response).to match_json_schema('game')
+  end
+
+  it 'returns appropriate amounts of player data' do
+    player2_data_for_player1 = json_body['players'].first
+
+    expect(player2_data_for_player1).not_to have_key('api_key')
+    expect(player2_data_for_player1).not_to have_key('hand')
+  end
+
+  def join_and_get_game(name)
+    api_post_join(name)
+    api_key = json_body['api_key']
+    api_get_game(api_key)
+  end
+
+  def json_body
+    JSON.parse(last_response.body)
   end
 
   def api_get_game(api_key)
@@ -141,8 +159,8 @@ RSpec.describe Server do
     }
   end
 
-  def api_post_join
-    post '/join', { 'name' => 'Caleb' }.to_json, {
+  def api_post_join(name)
+    post '/join', { 'name' => name }.to_json, {
       'HTTP_ACCEPT' => 'application/json',
       'CONTENT_TYPE' => 'application/json'
     }
