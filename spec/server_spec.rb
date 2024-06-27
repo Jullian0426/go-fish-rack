@@ -120,28 +120,28 @@ RSpec.describe Server do
   end
 
   it 'returns game status via API' do
-    2.times { api_post }
+    2.times { api_post_join }
     api_key = JSON.parse(last_response.body)['api_key']
     expect(api_key).not_to be_nil
-    api_get(api_key)
+    api_get_game(api_key)
     expect(last_response.status).to eq 200
     expect(last_response).to match_json_schema('game')
   end
 
   it 'returns 401 error if api_key is not authorized' do
     api_key = SecureRandom.hex(10)
-    api_get(api_key)
+    api_get_game(api_key)
     expect(last_response.status).to eq(401)
   end
 
-  def api_get(api_key)
+  def api_get_game(api_key)
     get '/game', nil, {
       'HTTP_AUTHORIZATION' => "Basic #{Base64.encode64("#{api_key}:X")}",
       'HTTP_ACCEPT' => 'application/json'
     }
   end
 
-  def api_post
+  def api_post_join
     post '/join', { 'name' => 'Caleb' }.to_json, {
       'HTTP_ACCEPT' => 'application/json',
       'CONTENT_TYPE' => 'application/json'

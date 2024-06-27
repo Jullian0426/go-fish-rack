@@ -53,6 +53,7 @@ class Game
     create_book_if_possible(current_player)
     next_player unless stay_turn
     game_over
+    # TODO: deal cards to players with empty hands
   end
 
   def create_book_if_possible(player)

@@ -3,7 +3,11 @@
   "type": "object",
   "required": [
     "players",
-    "deck"
+    "deck",
+    "started",
+    "current_player",
+    "stay_turn",
+    "winner"
   ],
   "properties": {
     "players": {

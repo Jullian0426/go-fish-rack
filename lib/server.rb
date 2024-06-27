@@ -71,16 +71,21 @@ class Server < Sinatra::Base
       end
       f.json do
         halt 401, 'Unauthorized' unless validate_api_key
+        # TODO: make json response user specific to not reveal opponent info
         json self.class.game.as_json
       end
     end
   end
 
   post '/game' do
-    opponent_key = params['opponent_key']
-    opponent = self.class.game.players.find { |player| player.api_key == opponent_key }
+    opponent_index = params['opponent_index'].to_i
+    opponent = self.class.game.players[opponent_index]
     rank = params['rank']
     self.class.game.play_round(opponent, rank)
-    redirect '/game'
+
+    respond_to do |f|
+      f.html { redirect '/game' }
+      f.json { json self.class.game.as_json }
+    end
   end
 end

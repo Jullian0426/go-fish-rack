@@ -38,10 +38,10 @@ html lang="en"
     - if game.started && session_player.api_key == game.current_player.api_key
       form action="/game" method="post"
         label for="player" Choose Opponent:
-        select#player name="opponent_key"
+        select#player name="opponent_index"
           - game.players.each do |player|
             - unless player.api_key == session_player.api_key
-              option value="#{player.api_key}" = player.name
+              option value="#{game.players.index(player)}" = player.name
         label for="rank" Choose Rank:
         select#rank name="rank"
           - game.current_player.hand.uniq(&:rank).each do |card|
