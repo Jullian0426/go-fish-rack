@@ -87,6 +87,8 @@ class Server < Sinatra::Base
 
     respond_to do |f|
       f.html do
+        return redirect '/game' unless self.class.game.can_play_round?(session[:session_player].api_key)
+
         self.class.game.play_round(opponent, rank)
         redirect '/game'
       end

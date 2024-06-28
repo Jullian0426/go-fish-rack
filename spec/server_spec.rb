@@ -13,10 +13,12 @@ RSpec.describe Server do
   include Capybara::DSL
   before do
     Capybara.app = Server.new
+    WebMock.disable!
   end
 
   after do
     Server.reset!
+    WebMock.enable!
   end
 
   it 'is possible to join a game' do
@@ -94,6 +96,15 @@ RSpec.describe Server do
       refresh_sessions
       expect(@session1).to have_content('6, C')
       expect(@session2).not_to have_content('6, C')
+    end
+
+    it 'should not run play_round if user is not current player' do
+      initial_game_state = @game.players.dup
+      @session1.select 'Player 2', from: 'player'
+      @session1.select '6', from: 'rank'
+      @game.next_player
+      @session1.click_on 'Take Turn'
+      expect(@game.players).to eq(initial_game_state)
     end
   end
 

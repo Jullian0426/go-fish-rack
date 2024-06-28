@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json_matchers/rspec'
+require 'webmock/rspec'
 
 JsonMatchers.schema_root = 'spec/support/schemas'
 
