@@ -42,4 +42,24 @@ RSpec.describe Client do
       expect(client.state_changed?).to eq true
     end
   end
+
+  describe '#current_turn?' do
+    before do
+      @test_game = Game.new
+      stub_request(:get, %r{/game})
+        .to_return_json(body: { game: @test_game.as_json.to_json })
+
+      @client = Client.new(player_name: 'Test')
+    end
+
+    it "returns true if it is user's turn" do
+      @client.game_state['is_turn'] = true
+      expect(@client.current_turn?).to eq true
+    end
+
+    it "returns false if it is not user's turn" do
+      @client.game_state['is_turn'] = false
+      expect(@client.current_turn?).to eq false
+    end
+  end
 end

@@ -44,6 +44,7 @@ class Client
   end
 
   def current_turn?
+    game_state['is_turn']
   end
 
   def turn_prompt
