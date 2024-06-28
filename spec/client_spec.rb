@@ -31,7 +31,15 @@ RSpec.describe Client do
 
   describe '#state_changed?' do
     it 'returns true if game state has changed' do
+      test_game = Game.new
+      updated_game = Game.new
+      stub_request(:get, %r{/game})
+        .to_return_json({ body: { game: test_game.as_json.to_json } },
+                        { body: { game: updated_game.as_json.to_json } })
 
+      client = Client.new(player_name: 'Test')
+      client.game_state
+      expect(client.state_changed?).to eq true
     end
   end
 end

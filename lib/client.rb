@@ -40,6 +40,7 @@ class Client
   end
 
   def state_changed?
+    get_game != game_state
   end
 
   def current_turn?

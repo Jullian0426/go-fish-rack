@@ -34,6 +34,16 @@
     "stay_turn": {
       "type": "boolean"
     },
+    "is_turn": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
     "winner": {
       "oneOf": [
         {
