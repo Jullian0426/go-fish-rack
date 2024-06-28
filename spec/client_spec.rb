@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require_relative '../lib/client'
+require_relative '../lib/game'
 
 RSpec.describe Client do
   describe '#join_game' do
@@ -13,6 +14,24 @@ RSpec.describe Client do
       client = Client.new(player_name: 'Test')
       client.join_game
       expect(client.api_key).to eq test_api_key
+    end
+  end
+
+  describe '#game_state' do
+    it 'should retreive the current game state' do
+      test_game = Game.new
+      stub_request(:get, %r{/game})
+        .to_return_json(body: { game: test_game.as_json.to_json })
+
+      client = Client.new(player_name: 'Test')
+      response = client.game_state
+      expect(response['game']).to eq test_game.as_json.to_json
+    end
+  end
+
+  describe '#state_changed?' do
+    it 'returns true if game state has changed' do
+
     end
   end
 end

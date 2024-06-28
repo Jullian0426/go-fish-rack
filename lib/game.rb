@@ -80,7 +80,7 @@ class Game
     current_player.api_key == api_key
   end
 
-  def as_json(api_key)
+  def as_json(api_key = '')
     {
       players: players.map do |player|
                  player.as_json(player.api_key == api_key)

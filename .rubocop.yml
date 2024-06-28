@@ -3,3 +3,6 @@ Metrics/MethodLength:
 
 Metrics/BlockLength:
   Max: 200
+
+Layout/FirstHashElementIndentation:
+  Enabled: false
