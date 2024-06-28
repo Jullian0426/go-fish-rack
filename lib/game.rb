@@ -76,6 +76,10 @@ class Game
     self.winner = players.max_by { |player| player.books.size }
   end
 
+  def can_play_round?(api_key)
+    current_player.api_key == api_key
+  end
+
   def as_json(api_key)
     {
       players: players.map do |player|
