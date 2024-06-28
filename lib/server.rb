@@ -82,14 +82,21 @@ class Server < Sinatra::Base
 
   post '/game' do
     # TODO: validate input
-    opponent_index = params['opponent_index'].to_i
+    opponent_index = params['opponent'].to_i - 1
     opponent = self.class.game.players[opponent_index]
     rank = params['rank']
-    self.class.game.play_round(opponent, rank)
 
     respond_to do |f|
-      f.html { redirect '/game' }
-      f.json { json self.class.game.as_json }
+      f.html do
+        self.class.game.play_round(opponent, rank)
+        redirect '/game'
+      end
+      f.json do
+        api_key = receive_api_key
+        halt 401, 'Unauthorized' unless self.class.game.current_player.api_key == api_key
+        self.class.game.play_round(opponent, rank)
+        json self.class.game.as_json(api_key)
+      end
     end
   end
 end

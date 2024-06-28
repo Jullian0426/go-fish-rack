@@ -126,8 +126,10 @@ RSpec.describe Server do
   end
 
   before do
-    join_and_get_game('Player 1')
-    join_and_get_game('Player 2')
+    @player1_key = join_and_get_game('Player 1').first
+    @player2_key, @player2_data = join_and_get_game('Player 2')
+    api_get_game(@player1_key)
+    @player1_data = json_body
   end
 
   it 'returns game status via API' do
@@ -136,16 +138,33 @@ RSpec.describe Server do
   end
 
   it 'returns appropriate amounts of player data' do
-    player2_data_for_player1 = json_body['players'].first
+    player2_data_for_player1 = @player2_data['players'].first
 
     expect(player2_data_for_player1).not_to have_key('api_key')
     expect(player2_data_for_player1).not_to have_key('hand')
+  end
+
+  describe 'Post /game' do
+    it 'returns the updated game' do
+      player1_card = @player1_data['players'].first['hand'].first
+      api_post_game(@player1_key, '2', player1_card['rank'].to_s)
+      updated_player1_data = json_body
+      expect(updated_player1_data).not_to eq(@player1_data)
+    end
+
+    it "returns 401 error if it's not this player's turn" do
+      player1_card = @player1_data['players'].first['hand'].first
+      api_post_game(@player2_key, '2', player1_card['rank'].to_s)
+      expect(last_response.status).to eq(401)
+    end
   end
 
   def join_and_get_game(name)
     api_post_join(name)
     api_key = json_body['api_key']
     api_get_game(api_key)
+    game_data = json_body
+    [api_key, game_data]
   end
 
   def json_body
@@ -161,6 +180,14 @@ RSpec.describe Server do
 
   def api_post_join(name)
     post '/join', { 'name' => name }.to_json, {
+      'HTTP_ACCEPT' => 'application/json',
+      'CONTENT_TYPE' => 'application/json'
+    }
+  end
+
+  def api_post_game(api_key, player, rank)
+    post '/game', { 'opponent' => player, 'rank' => rank }.to_json, {
+      'HTTP_AUTHORIZATION' => "Basic #{Base64.encode64("#{api_key}:X")}",
       'HTTP_ACCEPT' => 'application/json',
       'CONTENT_TYPE' => 'application/json'
     }
